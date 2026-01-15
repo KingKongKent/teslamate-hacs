@@ -45,15 +45,9 @@ class TeslaMateDeviceTracker(CoordinatorEntity, TrackerEntity):
         
         # Entity attributes
         self._attr_unique_id = f"teslamate_{car_id}_location"
+        self._attr_has_entity_name = True
+        self._attr_name = "Location"
         self._attr_icon = "mdi:car"
-    
-    @property
-    def name(self) -> str:
-        """Return the name of the device tracker."""
-        display_name = self.coordinator.data.get('display_name')
-        if display_name:
-            return f"{display_name} Location"
-        return f"Tesla {self._car_id} Location"
     
     @property
     def device_info(self) -> dict[str, Any]:

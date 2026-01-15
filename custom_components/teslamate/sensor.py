@@ -278,18 +278,12 @@ class TeslaMateSensor(CoordinatorEntity, SensorEntity):
         
         # Entity attributes
         self._attr_unique_id = f"teslamate_{car_id}_{sensor_type}"
+        self._attr_has_entity_name = True
+        self._attr_name = config['name']
         self._attr_icon = config.get("icon")
         self._attr_device_class = config.get("device_class")
         self._attr_state_class = config.get("state_class")
         self._attr_native_unit_of_measurement = config.get("unit")
-    
-    @property
-    def name(self) -> str:
-        """Return the name of the sensor."""
-        display_name = self.coordinator.data.get('display_name')
-        if display_name:
-            return f"{display_name} {self._config['name']}"
-        return f"Tesla {self._car_id} {self._config['name']}"
     
     @property
     def device_info(self) -> dict[str, Any]:
