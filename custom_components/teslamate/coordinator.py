@@ -32,6 +32,8 @@ class TeslaMateDataCoordinator(DataUpdateCoordinator):
         self.base_topic = f"{mqtt_prefix}/cars/{car_id}"
         self._subscriptions = []
         
+        _LOGGER.info(f"Initializing TeslaMate coordinator for car {car_id}, MQTT topic: {self.base_topic}")
+        
         super().__init__(
             hass,
             _LOGGER,
@@ -43,9 +45,9 @@ class TeslaMateDataCoordinator(DataUpdateCoordinator):
         self.data = {}
         
         # Subscribe to all topics
-        self._subscribe_to_topics()
+        self.hass.async_create_task(self._subscribe_to_topics())
 
-    def _subscribe_to_topics(self) -> None:
+    async def _subscribe_to_topics(self) -> None:
         """Subscribe to all TeslaMate MQTT topics."""
         topics = [
             "display_name", "state", "since", "healthy", "version",
@@ -78,16 +80,16 @@ class TeslaMateDataCoordinator(DataUpdateCoordinator):
                     payload = msg.payload
                     
                     # Try to parse JSON
-                    if payload.startswith("{") or payload.startswith("["):
+                    if isinstance(payload, str) and (payload.startswith("{") or payload.startswith("[")):
                         try:
                             payload = json.loads(payload)
                         except json.JSONDecodeError:
                             pass
                     # Parse boolean values
-                    elif payload.lower() in ("true", "false"):
+                    elif isinstance(payload, str) and payload.lower() in ("true", "false"):
                         payload = payload.lower() == "true"
                     # Try to parse as number
-                    else:
+                    elif isinstance(payload, str):
                         try:
                             if "." in payload:
                                 payload = float(payload)
@@ -98,13 +100,15 @@ class TeslaMateDataCoordinator(DataUpdateCoordinator):
                     
                     self.data[topic_name] = payload
                     self.async_set_updated_data(self.data)
+                    _LOGGER.debug(f"Updated {topic_name} = {payload}")
                 except Exception as err:
                     _LOGGER.error(f"Error processing message for {topic_name}: {err}")
             
             # Subscribe to MQTT topic
-            self._subscriptions.append(
-                mqtt.async_subscribe(self.hass, full_topic, message_received)
-            )
+            unsubscribe = await mqtt.async_subscribe(self.hass, full_topic, message_received)
+            self._subscriptions.append(unsubscribe)
+        
+        _LOGGER.info(f"Subscribed to {len(self._subscriptions)} MQTT topics for car {self.car_id}")
 
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from MQTT."""
