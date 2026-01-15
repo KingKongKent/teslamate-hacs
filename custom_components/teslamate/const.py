@@ -20,7 +20,43 @@ MODEL_NAMES = {
     "S": "Model S",
     "X": "Model X",
     "Y": "Model Y",
+    # Also handle lowercase (just in case)
+    "s": "Model S",
+    "x": "Model X",
+    "y": "Model Y",
+    # Handle full names
+    "model3": "Model 3",
+    "models": "Model S",
+    "modelx": "Model X",
+    "modely": "Model Y",
 }
+
+
+def get_model_name(model_value: str | None) -> str:
+    """Get friendly model name from TeslaMate model value."""
+    if not model_value:
+        return "Unknown"
+    
+    # Clean up the value
+    model_clean = str(model_value).strip().upper()
+    
+    # Try exact match first
+    for key, name in MODEL_NAMES.items():
+        if key.upper() == model_clean:
+            return name
+    
+    # Try partial match (in case we get "MODEL Y" or "Model Y")
+    if "Y" in model_clean:
+        return "Model Y"
+    elif "X" in model_clean:
+        return "Model X"
+    elif "S" in model_clean:
+        return "Model S"
+    elif "3" in model_clean:
+        return "Model 3"
+    
+    # Return as-is if we can't match
+    return f"Model {model_value}"
 
 # MQTT Topics (relative to base topic)
 TOPIC_DISPLAY_NAME = "display_name"

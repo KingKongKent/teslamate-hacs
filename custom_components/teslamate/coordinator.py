@@ -100,7 +100,12 @@ class TeslaMateDataCoordinator(DataUpdateCoordinator):
                     
                     self.data[topic_name] = payload
                     self.async_set_updated_data(self.data)
-                    _LOGGER.debug(f"Updated {topic_name} = {payload}")
+                    
+                    # Log important data with INFO level
+                    if topic_name in ("model", "display_name", "battery_level", "state"):
+                        _LOGGER.info(f"Car {self.car_id} - {topic_name} = {payload}")
+                    else:
+                        _LOGGER.debug(f"Car {self.car_id} - {topic_name} = {payload}")
                 except Exception as err:
                     _LOGGER.error(f"Error processing message for {topic_name}: {err}")
             

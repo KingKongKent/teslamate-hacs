@@ -13,7 +13,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, MODEL_NAMES, MANUFACTURER
+from .const import DOMAIN, MODEL_NAMES, MANUFACTURER, get_model_name
 from .coordinator import TeslaMateDataCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -178,8 +178,8 @@ class TeslaMateBinarySensor(CoordinatorEntity, BinarySensorEntity):
     @property
     def device_info(self) -> dict[str, Any]:
         """Return device information."""
-        model = self.coordinator.data.get("model", "Unknown")
-        model_name = MODEL_NAMES.get(model, f"Model {model}")
+        model_raw = self.coordinator.data.get("model")
+        model_name = get_model_name(model_raw)
         display_name = self.coordinator.data.get("display_name", f"Tesla {self._car_id}")
         
         return {
