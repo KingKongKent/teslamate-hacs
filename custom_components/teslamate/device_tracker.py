@@ -47,6 +47,7 @@ class TeslaMateDeviceTracker(CoordinatorEntity, TrackerEntity):
         self._attr_unique_id = f"teslamate_{car_id}_location"
         self._attr_has_entity_name = True
         self._attr_name = "Location"
+        self._attr_suggested_object_id = f"tesla_{car_id}_location"
         self._attr_icon = "mdi:car"
     
     @property
@@ -54,7 +55,15 @@ class TeslaMateDeviceTracker(CoordinatorEntity, TrackerEntity):
         """Return device information."""
         model_raw = self.coordinator.data.get("model")
         model_name = get_model_name(model_raw)
-        display_name = self.coordinator.data.get("display_name", f"Tesla {self._car_id}")
+        
+        # Use display_name if available, otherwise use a friendly default
+        display_name = self.coordinator.data.get("display_name")
+        if not display_name:
+            # Generate friendly name from model or use generic
+            if model_raw in ("Y", "3", "S", "X"):
+                display_name = f"Tesla {model_name}"
+            else:
+                display_name = f"Tesla Car {self._car_id}"
         
         return {
             "identifiers": {(DOMAIN, f"teslamate_{self._car_id}")},

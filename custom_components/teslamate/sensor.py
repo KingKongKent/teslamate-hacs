@@ -280,6 +280,7 @@ class TeslaMateSensor(CoordinatorEntity, SensorEntity):
         self._attr_unique_id = f"teslamate_{car_id}_{sensor_type}"
         self._attr_has_entity_name = True
         self._attr_name = config['name']
+        self._attr_suggested_object_id = f"tesla_{car_id}_{sensor_type}"
         self._attr_icon = config.get("icon")
         self._attr_device_class = config.get("device_class")
         self._attr_state_class = config.get("state_class")
@@ -290,7 +291,15 @@ class TeslaMateSensor(CoordinatorEntity, SensorEntity):
         """Return device information."""
         model_raw = self.coordinator.data.get("model")
         model_name = get_model_name(model_raw)
-        display_name = self.coordinator.data.get("display_name", f"Tesla {self._car_id}")
+        
+        # Use display_name if available, otherwise use a friendly default
+        display_name = self.coordinator.data.get("display_name")
+        if not display_name:
+            # Generate friendly name from model or use generic
+            if model_raw in ("Y", "3", "S", "X"):
+                display_name = f"Tesla {model_name}"
+            else:
+                display_name = f"Tesla Car {self._car_id}"
         
         _LOGGER.debug(
             f"Device info for car {self._car_id}: model_raw='{model_raw}', "
