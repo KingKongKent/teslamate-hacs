@@ -321,6 +321,12 @@ class TeslaMateSensor(CoordinatorEntity, SensorEntity):
         """Return additional attributes."""
         attrs = {}
         
+        # Add debug info for model sensor
+        if self._sensor_type == "model":
+            attrs["mqtt_raw_value"] = self.coordinator.data.get("model")
+            attrs["display_name"] = self.coordinator.data.get("display_name")
+            attrs["mapped_model_name"] = get_model_name(self.coordinator.data.get("model"))
+        
         # Add location data for geofence sensor
         if self._sensor_type == "geofence":
             if location := self.coordinator.data.get("location"):
