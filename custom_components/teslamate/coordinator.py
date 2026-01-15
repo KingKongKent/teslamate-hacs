@@ -79,8 +79,11 @@ class TeslaMateDataCoordinator(DataUpdateCoordinator):
                 try:
                     payload = msg.payload
                     
+                    # Handle empty strings - convert to None
+                    if isinstance(payload, str) and payload.strip() == "":
+                        payload = None
                     # Try to parse JSON
-                    if isinstance(payload, str) and (payload.startswith("{") or payload.startswith("[")):
+                    elif isinstance(payload, str) and (payload.startswith("{") or payload.startswith("[")):
                         try:
                             payload = json.loads(payload)
                         except json.JSONDecodeError:
@@ -89,7 +92,7 @@ class TeslaMateDataCoordinator(DataUpdateCoordinator):
                     elif isinstance(payload, str) and payload.lower() in ("true", "false"):
                         payload = payload.lower() == "true"
                     # Try to parse as number
-                    elif isinstance(payload, str):
+                    elif isinstance(payload, str) and payload.strip():
                         try:
                             if "." in payload:
                                 payload = float(payload)
