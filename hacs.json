@@ -2,5 +2,7 @@
   "name": "TeslaMate",
   "content_in_root": false,
   "render_readme": true,
-  "domains": ["sensor", "binary_sensor", "device_tracker"]
+  "filename": "teslamate-hacs.zip",
+  "domains": ["sensor", "binary_sensor", "device_tracker"],
+  "homeassistant": "2024.1.0"
 }
