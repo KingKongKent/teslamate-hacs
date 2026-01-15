@@ -1,0 +1,514 @@
+# TeslaMate MQTT Sensors Configuration
+# Modern Home Assistant MQTT Format (2024.6+)
+# 
+# Installation:
+# 1. Save this file to: config/packages/teslamate.yaml
+# 2. Update the variables at the top with your settings
+# 3. Add to configuration.yaml: homeassistant: packages: !include_dir_named packages
+# 4. Restart Home Assistant
+#
+# Configuration Variables:
+# - car_id: Your TeslaMate car ID (usually 1, check MQTT topics)
+# - mqtt_prefix: Your TeslaMate MQTT prefix (default: teslamate)
+# - car_name: Display name for your car (e.g., "Black Magic", "Model Y Performance")
+# - car_model: Your Tesla model (e.g., "Model Y", "Model 3", "Model S", "Model X")
+
+# IMPORTANT: Update these values for your setup
+{% set car_id = 1 %}
+{% set mqtt_prefix = "teslamate" %}
+{% set car_name = "Tesla Model Y" %}
+{% set car_model = "Model Y" %}
+{% set base_topic = mqtt_prefix ~ "/cars/" ~ car_id %}
+
+# Device definition (shared by all entities)
+{% set device_config %}
+  identifiers: ["teslamate_{{ car_id }}"]
+  name: "{{ car_name }}"
+  manufacturer: "Tesla"
+  model: "{{ car_model }}"
+  configuration_url: "http://your-teslamate-url:4000/"
+{% endset %}
+
+mqtt:
+  # ============================================
+  # LOCATION & TRACKING
+  # ============================================
+  
+  device_tracker:
+    - name: "Location"
+      unique_id: "teslamate_{{ car_id }}_location"
+      object_id: "{{ car_name | slugify }}_location"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/latitude"
+      json_attributes_topic: "{{ base_topic }}/location"
+      icon: "mdi:crosshairs-gps"
+
+  # ============================================
+  # VEHICLE STATE
+  # ============================================
+  
+  sensor:
+    - name: "Display Name"
+      unique_id: "teslamate_{{ car_id }}_display_name"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/display_name"
+      icon: "mdi:car"
+      
+    - name: "State"
+      unique_id: "teslamate_{{ car_id }}_state"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/state"
+      icon: "mdi:car-connected"
+      
+    - name: "Since"
+      unique_id: "teslamate_{{ car_id }}_since"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/since"
+      device_class: "timestamp"
+      icon: "mdi:clock-outline"
+      
+    - name: "Geofence"
+      unique_id: "teslamate_{{ car_id }}_geofence"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/geofence"
+      icon: "mdi:map-marker-radius"
+      
+    - name: "Shift State"
+      unique_id: "teslamate_{{ car_id }}_shift_state"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/shift_state"
+      icon: "mdi:car-shift-pattern"
+
+  # ============================================
+  # BATTERY & CHARGING
+  # ============================================
+  
+  sensor:
+    - name: "Battery Level"
+      unique_id: "teslamate_{{ car_id }}_battery_level"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/battery_level"
+      device_class: "battery"
+      state_class: "measurement"
+      unit_of_measurement: "%"
+      icon: "mdi:battery"
+      
+    - name: "Usable Battery Level"
+      unique_id: "teslamate_{{ car_id }}_usable_battery_level"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/usable_battery_level"
+      device_class: "battery"
+      state_class: "measurement"
+      unit_of_measurement: "%"
+      
+    - name: "Charge Limit"
+      unique_id: "teslamate_{{ car_id }}_charge_limit_soc"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/charge_limit_soc"
+      state_class: "measurement"
+      unit_of_measurement: "%"
+      icon: "mdi:battery-charging-80"
+      
+    - name: "Estimated Range"
+      unique_id: "teslamate_{{ car_id }}_est_battery_range_km"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/est_battery_range_km"
+      device_class: "distance"
+      state_class: "measurement"
+      unit_of_measurement: "km"
+      icon: "mdi:map-marker-distance"
+      
+    - name: "Rated Range"
+      unique_id: "teslamate_{{ car_id }}_rated_battery_range_km"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/rated_battery_range_km"
+      device_class: "distance"
+      state_class: "measurement"
+      unit_of_measurement: "km"
+      
+    - name: "Ideal Range"
+      unique_id: "teslamate_{{ car_id }}_ideal_battery_range_km"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/ideal_battery_range_km"
+      device_class: "distance"
+      state_class: "measurement"
+      unit_of_measurement: "km"
+      
+    - name: "Charging State"
+      unique_id: "teslamate_{{ car_id }}_charging_state"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/charging_state"
+      icon: "mdi:ev-station"
+      
+    - name: "Charge Energy Added"
+      unique_id: "teslamate_{{ car_id }}_charge_energy_added"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/charge_energy_added"
+      device_class: "energy"
+      state_class: "total_increasing"
+      unit_of_measurement: "kWh"
+      icon: "mdi:battery-charging"
+      
+    - name: "Charger Power"
+      unique_id: "teslamate_{{ car_id }}_charger_power"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/charger_power"
+      device_class: "power"
+      state_class: "measurement"
+      unit_of_measurement: "kW"
+      icon: "mdi:lightning-bolt"
+      
+    - name: "Charger Voltage"
+      unique_id: "teslamate_{{ car_id }}_charger_voltage"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/charger_voltage"
+      device_class: "voltage"
+      state_class: "measurement"
+      unit_of_measurement: "V"
+      icon: "mdi:lightning-bolt"
+      
+    - name: "Charger Actual Current"
+      unique_id: "teslamate_{{ car_id }}_charger_actual_current"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/charger_actual_current"
+      device_class: "current"
+      state_class: "measurement"
+      unit_of_measurement: "A"
+      icon: "mdi:current-ac"
+      
+    - name: "Charger Phases"
+      unique_id: "teslamate_{{ car_id }}_charger_phases"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/charger_phases"
+      icon: "mdi:sine-wave"
+      
+    - name: "Time To Full Charge"
+      unique_id: "teslamate_{{ car_id }}_time_to_full_charge"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/time_to_full_charge"
+      device_class: "duration"
+      state_class: "measurement"
+      unit_of_measurement: "h"
+      icon: "mdi:clock-outline"
+      
+    - name: "Scheduled Charging Start Time"
+      unique_id: "teslamate_{{ car_id }}_scheduled_charging_start_time"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/scheduled_charging_start_time"
+      device_class: "timestamp"
+      icon: "mdi:clock-start"
+
+  # ============================================
+  # BINARY SENSORS - CHARGING
+  # ============================================
+  
+  binary_sensor:
+    - name: "Plugged In"
+      unique_id: "teslamate_{{ car_id }}_plugged_in"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/plugged_in"
+      device_class: "plug"
+      payload_on: "true"
+      payload_off: "false"
+      
+    - name: "Charge Port Door"
+      unique_id: "teslamate_{{ car_id }}_charge_port_door_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/charge_port_door_open"
+      device_class: "opening"
+      payload_on: "true"
+      payload_off: "false"
+      icon: "mdi:ev-plug-tesla"
+
+  # ============================================
+  # CLIMATE
+  # ============================================
+  
+  sensor:
+    - name: "Inside Temperature"
+      unique_id: "teslamate_{{ car_id }}_inside_temp"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/inside_temp"
+      device_class: "temperature"
+      state_class: "measurement"
+      unit_of_measurement: "°C"
+      
+    - name: "Outside Temperature"
+      unique_id: "teslamate_{{ car_id }}_outside_temp"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/outside_temp"
+      device_class: "temperature"
+      state_class: "measurement"
+      unit_of_measurement: "°C"
+
+  binary_sensor:
+    - name: "Climate"
+      unique_id: "teslamate_{{ car_id }}_is_climate_on"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/is_climate_on"
+      payload_on: "true"
+      payload_off: "false"
+      icon: "mdi:fan"
+      
+    - name: "Preconditioning"
+      unique_id: "teslamate_{{ car_id }}_is_preconditioning"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/is_preconditioning"
+      payload_on: "true"
+      payload_off: "false"
+      icon: "mdi:fan-auto"
+
+  # ============================================
+  # DRIVING
+  # ============================================
+  
+  sensor:
+    - name: "Speed"
+      unique_id: "teslamate_{{ car_id }}_speed"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/speed"
+      device_class: "speed"
+      state_class: "measurement"
+      unit_of_measurement: "km/h"
+      icon: "mdi:speedometer"
+      
+    - name: "Power"
+      unique_id: "teslamate_{{ car_id }}_power"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/power"
+      device_class: "power"
+      state_class: "measurement"
+      unit_of_measurement: "kW"
+      icon: "mdi:flash"
+      
+    - name: "Heading"
+      unique_id: "teslamate_{{ car_id }}_heading"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/heading"
+      state_class: "measurement"
+      unit_of_measurement: "°"
+      icon: "mdi:compass"
+      
+    - name: "Elevation"
+      unique_id: "teslamate_{{ car_id }}_elevation"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/elevation"
+      device_class: "distance"
+      state_class: "measurement"
+      unit_of_measurement: "m"
+      icon: "mdi:elevation-rise"
+      
+    - name: "Odometer"
+      unique_id: "teslamate_{{ car_id }}_odometer"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/odometer"
+      device_class: "distance"
+      state_class: "total_increasing"
+      unit_of_measurement: "km"
+      icon: "mdi:counter"
+
+  # ============================================
+  # SECURITY
+  # ============================================
+  
+  binary_sensor:
+    - name: "Locked"
+      unique_id: "teslamate_{{ car_id }}_locked"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/locked"
+      device_class: "lock"
+      payload_on: "false"  # Inverted: locked=false means door is locked
+      payload_off: "true"
+      
+    - name: "Sentry Mode"
+      unique_id: "teslamate_{{ car_id }}_sentry_mode"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/sentry_mode"
+      payload_on: "true"
+      payload_off: "false"
+      icon: "mdi:cctv"
+      
+    - name: "Doors"
+      unique_id: "teslamate_{{ car_id }}_doors_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/doors_open"
+      device_class: "door"
+      payload_on: "true"
+      payload_off: "false"
+      
+    - name: "Driver Front Door"
+      unique_id: "teslamate_{{ car_id }}_driver_front_door_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/driver_front_door_open"
+      device_class: "door"
+      payload_on: "true"
+      payload_off: "false"
+      
+    - name: "Driver Rear Door"
+      unique_id: "teslamate_{{ car_id }}_driver_rear_door_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/driver_rear_door_open"
+      device_class: "door"
+      payload_on: "true"
+      payload_off: "false"
+      
+    - name: "Passenger Front Door"
+      unique_id: "teslamate_{{ car_id }}_passenger_front_door_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/passenger_front_door_open"
+      device_class: "door"
+      payload_on: "true"
+      payload_off: "false"
+      
+    - name: "Passenger Rear Door"
+      unique_id: "teslamate_{{ car_id }}_passenger_rear_door_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/passenger_rear_door_open"
+      device_class: "door"
+      payload_on: "true"
+      payload_off: "false"
+      
+    - name: "Windows"
+      unique_id: "teslamate_{{ car_id }}_windows_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/windows_open"
+      device_class: "window"
+      payload_on: "true"
+      payload_off: "false"
+      
+    - name: "Trunk"
+      unique_id: "teslamate_{{ car_id }}_trunk_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/trunk_open"
+      device_class: "opening"
+      payload_on: "true"
+      payload_off: "false"
+      icon: "mdi:car-back"
+      
+    - name: "Frunk"
+      unique_id: "teslamate_{{ car_id }}_frunk_open"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/frunk_open"
+      device_class: "opening"
+      payload_on: "true"
+      payload_off: "false"
+      icon: "mdi:car-back"
+      
+    - name: "User Present"
+      unique_id: "teslamate_{{ car_id }}_is_user_present"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/is_user_present"
+      device_class: "presence"
+      payload_on: "true"
+      payload_off: "false"
+
+  # ============================================
+  # TIRE PRESSURE (TPMS)
+  # ============================================
+  
+  sensor:
+    - name: "Tire Pressure Front Left"
+      unique_id: "teslamate_{{ car_id }}_tpms_pressure_fl"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/tpms_pressure_fl"
+      device_class: "pressure"
+      state_class: "measurement"
+      unit_of_measurement: "bar"
+      icon: "mdi:car-tire-alert"
+      
+    - name: "Tire Pressure Front Right"
+      unique_id: "teslamate_{{ car_id }}_tpms_pressure_fr"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/tpms_pressure_fr"
+      device_class: "pressure"
+      state_class: "measurement"
+      unit_of_measurement: "bar"
+      icon: "mdi:car-tire-alert"
+      
+    - name: "Tire Pressure Rear Left"
+      unique_id: "teslamate_{{ car_id }}_tpms_pressure_rl"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/tpms_pressure_rl"
+      device_class: "pressure"
+      state_class: "measurement"
+      unit_of_measurement: "bar"
+      icon: "mdi:car-tire-alert"
+      
+    - name: "Tire Pressure Rear Right"
+      unique_id: "teslamate_{{ car_id }}_tpms_pressure_rr"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/tpms_pressure_rr"
+      device_class: "pressure"
+      state_class: "measurement"
+      unit_of_measurement: "bar"
+      icon: "mdi:car-tire-alert"
+
+  # ============================================
+  # SOFTWARE & UPDATES
+  # ============================================
+  
+  sensor:
+    - name: "Software Version"
+      unique_id: "teslamate_{{ car_id }}_version"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/version"
+      icon: "mdi:update"
+      
+    - name: "Available Update Version"
+      unique_id: "teslamate_{{ car_id }}_update_version"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/update_version"
+      icon: "mdi:update"
+
+  binary_sensor:
+    - name: "Update Available"
+      unique_id: "teslamate_{{ car_id }}_update_available"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/update_available"
+      device_class: "update"
+      payload_on: "true"
+      payload_off: "false"
+      
+    - name: "TeslaMate Healthy"
+      unique_id: "teslamate_{{ car_id }}_healthy"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/healthy"
+      device_class: "problem"
+      payload_on: "false"  # Inverted: healthy=true means no problem
+      payload_off: "true"
+      icon: "mdi:heart-pulse"
+
+  # ============================================
+  # VEHICLE INFO
+  # ============================================
+  
+  sensor:
+    - name: "Model"
+      unique_id: "teslamate_{{ car_id }}_model"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/model"
+      icon: "mdi:car-info"
+      
+    - name: "Trim Badging"
+      unique_id: "teslamate_{{ car_id }}_trim_badging"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/trim_badging"
+      icon: "mdi:shield-star-outline"
+      
+    - name: "Exterior Color"
+      unique_id: "teslamate_{{ car_id }}_exterior_color"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/exterior_color"
+      icon: "mdi:palette"
+      
+    - name: "Wheel Type"
+      unique_id: "teslamate_{{ car_id }}_wheel_type"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/wheel_type"
+      icon: "mdi:tire"
+      
+    - name: "Spoiler Type"
+      unique_id: "teslamate_{{ car_id }}_spoiler_type"
+      device: {{ device_config | indent(8) }}
+      state_topic: "{{ base_topic }}/spoiler_type"
+      icon: "mdi:car-sports"
