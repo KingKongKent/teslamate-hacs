@@ -277,23 +277,33 @@ class TeslaMateSensor(CoordinatorEntity, SensorEntity):
         self._config = config
         
         # Entity attributes
-        self._attr_name = f"{coordinator.data.get('display_name', f'Tesla {car_id}')} {config['name']}"
         self._attr_unique_id = f"teslamate_{car_id}_{sensor_type}"
         self._attr_icon = config.get("icon")
         self._attr_device_class = config.get("device_class")
         self._attr_state_class = config.get("state_class")
         self._attr_native_unit_of_measurement = config.get("unit")
-        
-        # Device info
-        model = coordinator.data.get("model", "Unknown")
+    
+    @property
+    def name(self) -> str:
+        """Return the name of the sensor."""
+        display_name = self.coordinator.data.get('display_name')
+        if display_name:
+            return f"{display_name} {self._config['name']}"
+        return f"Tesla {self._car_id} {self._config['name']}"
+    
+    @property
+    def device_info(self) -> dict[str, Any]:
+        """Return device information."""
+        model = self.coordinator.data.get("model", "Unknown")
         model_name = MODEL_NAMES.get(model, f"Model {model}")
+        display_name = self.coordinator.data.get("display_name", f"Tesla {self._car_id}")
         
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, f"teslamate_{car_id}")},
-            "name": coordinator.data.get("display_name", f"Tesla {car_id}"),
+        return {
+            "identifiers": {(DOMAIN, f"teslamate_{self._car_id}")},
+            "name": display_name,
             "manufacturer": MANUFACTURER,
             "model": model_name,
-            "sw_version": coordinator.data.get("version"),
+            "sw_version": self.coordinator.data.get("version"),
         }
 
     @property

@@ -44,20 +44,30 @@ class TeslaMateDeviceTracker(CoordinatorEntity, TrackerEntity):
         self._car_id = car_id
         
         # Entity attributes
-        self._attr_name = f"{coordinator.data.get('display_name', f'Tesla {car_id}')} Location"
         self._attr_unique_id = f"teslamate_{car_id}_location"
         self._attr_icon = "mdi:car"
-        
-        # Device info
-        model = coordinator.data.get("model", "Unknown")
+    
+    @property
+    def name(self) -> str:
+        """Return the name of the device tracker."""
+        display_name = self.coordinator.data.get('display_name')
+        if display_name:
+            return f"{display_name} Location"
+        return f"Tesla {self._car_id} Location"
+    
+    @property
+    def device_info(self) -> dict[str, Any]:
+        """Return device information."""
+        model = self.coordinator.data.get("model", "Unknown")
         model_name = MODEL_NAMES.get(model, f"Model {model}")
+        display_name = self.coordinator.data.get("display_name", f"Tesla {self._car_id}")
         
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, f"teslamate_{car_id}")},
-            "name": coordinator.data.get("display_name", f"Tesla {car_id}"),
+        return {
+            "identifiers": {(DOMAIN, f"teslamate_{self._car_id}")},
+            "name": display_name,
             "manufacturer": MANUFACTURER,
             "model": model_name,
-            "sw_version": coordinator.data.get("version"),
+            "sw_version": self.coordinator.data.get("version"),
         }
 
     @property
