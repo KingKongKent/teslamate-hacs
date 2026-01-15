@@ -1,0 +1,191 @@
+# TeslaMate Dashboard Configuration
+# Copy this content and paste it into a new dashboard in Home Assistant
+# 
+# To create dashboard:
+# 1. Go to Settings → Dashboards
+# 2. Click "Add Dashboard" → "New Dashboard from Scratch"
+# 3. Click the three dots (⋮) → "Edit Dashboard" → "Raw Configuration Editor"
+# 4. Copy everything below this line and paste it
+# 5. Update entity IDs if needed (currently configured for car ID 3)
+
+title: Black Magic
+views:
+  - title: Tesla Dashboard
+    path: tesla
+    icon: mdi:car-electric
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          # Car Picture Card
+          - type: picture-entity
+            entity: device_tracker.tesla_3_location
+            image: /local/tesla_car.png
+            name: Black Magic
+            show_name: true
+            show_state: true
+            aspect_ratio: 16x9
+            
+          # Status Row
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: sensor.tesla_3_state
+                name: Status
+                icon: mdi:car-connected
+              - type: entity
+                entity: sensor.tesla_3_battery_level
+                name: Battery
+                icon: mdi:battery
+              - type: entity
+                entity: sensor.tesla_3_estimated_range
+                name: Range
+                icon: mdi:map-marker-distance
+          
+          # Battery & Charging Card
+          - type: entities
+            title: Battery & Charging
+            show_header_toggle: false
+            entities:
+              - entity: sensor.tesla_3_battery_level
+                name: Battery Level
+              - entity: sensor.tesla_3_usable_battery_level
+                name: Usable Battery Level
+              - entity: sensor.tesla_3_charge_limit
+                name: Charge Limit
+              - entity: sensor.tesla_3_estimated_range
+                name: Estimated Range
+              - entity: sensor.tesla_3_rated_range
+                name: Rated Range
+              - entity: sensor.tesla_3_ideal_range
+                name: Ideal Range
+              - entity: binary_sensor.tesla_3_plugged_in
+                name: Plugged In
+              - entity: sensor.tesla_3_charging_state
+                name: Charging State
+              - entity: sensor.tesla_3_charger_power
+                name: Charger Power
+              - entity: sensor.tesla_3_time_to_full_charge
+                name: Time to Full
+          
+          # Climate Card
+          - type: entities
+            title: Climate
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.tesla_3_climate
+                name: Climate On
+              - entity: sensor.tesla_3_inside_temperature
+                name: Inside Temperature
+              - entity: sensor.tesla_3_outside_temperature
+                name: Outside Temperature
+              - entity: binary_sensor.tesla_3_preconditioning
+                name: Preconditioning
+          
+          # Security Card
+          - type: entities
+            title: Security & Status
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.tesla_3_locked
+                name: Locked
+              - entity: binary_sensor.tesla_3_sentry_mode
+                name: Sentry Mode
+              - entity: binary_sensor.tesla_3_windows
+                name: Windows
+              - entity: binary_sensor.tesla_3_doors
+                name: Doors
+              - entity: binary_sensor.tesla_3_trunk
+                name: Trunk
+              - entity: binary_sensor.tesla_3_frunk
+                name: Frunk
+              - entity: binary_sensor.tesla_3_user_present
+                name: User Present
+          
+          # Location Card
+          - type: map
+            entities:
+              - entity: device_tracker.tesla_3_location
+            hours_to_show: 24
+            aspect_ratio: 16x9
+          
+          # Location Details Card
+          - type: entities
+            title: Location
+            show_header_toggle: false
+            entities:
+              - entity: device_tracker.tesla_3_location
+                name: Location
+              - entity: sensor.tesla_3_geofence
+                name: Geofence
+              - entity: sensor.tesla_3_speed
+                name: Speed
+              - entity: sensor.tesla_3_heading
+                name: Heading
+              - entity: sensor.tesla_3_shift_state
+                name: Shift State
+          
+          # Vehicle Info Card
+          - type: entities
+            title: Vehicle Information
+            show_header_toggle: false
+            entities:
+              - entity: sensor.tesla_3_model
+                name: Model
+              - entity: sensor.tesla_3_trim_badging
+                name: Trim
+              - entity: sensor.tesla_3_exterior_color
+                name: Color
+              - entity: sensor.tesla_3_software_version
+                name: Software Version
+              - entity: binary_sensor.tesla_3_update_available
+                name: Update Available
+              - entity: sensor.tesla_3_available_update_version
+                name: Available Update Version
+              - entity: sensor.tesla_3_wheel_type
+                name: Wheel Type
+              - entity: sensor.tesla_3_odometer
+                name: Odometer
+          
+          # Tire Pressure Card
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.tesla_3_tire_pressure_front_left
+                name: Front Left
+                min: 2.0
+                max: 3.5
+                severity:
+                  green: 2.5
+                  yellow: 2.2
+                  red: 0
+              - type: gauge
+                entity: sensor.tesla_3_tire_pressure_front_right
+                name: Front Right
+                min: 2.0
+                max: 3.5
+                severity:
+                  green: 2.5
+                  yellow: 2.2
+                  red: 0
+          
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.tesla_3_tire_pressure_rear_left
+                name: Rear Left
+                min: 2.0
+                max: 3.5
+                severity:
+                  green: 2.5
+                  yellow: 2.2
+                  red: 0
+              - type: gauge
+                entity: sensor.tesla_3_tire_pressure_rear_right
+                name: Rear Right
+                min: 2.0
+                max: 3.5
+                severity:
+                  green: 2.5
+                  yellow: 2.2
+                  red: 0
