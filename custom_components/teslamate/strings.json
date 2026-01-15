@@ -5,16 +5,21 @@
         "step": {
           "user": {
             "title": "TeslaMate Configuration",
-            "description": "Configure your TeslaMate MQTT integration. Make sure MQTT integration is already set up in Home Assistant.",
+            "description": "Configure your TeslaMate MQTT integration.\n\n{mqtt_status}\n{detected_config}\n\nThe integration will automatically detect your Tesla and sync data from TeslaMate.",
             "data": {
               "name": "Name",
-              "mqtt_prefix": "MQTT Topic Prefix",
-              "car_ids": "Car IDs (comma-separated)"
+              "mqtt_prefix": "MQTT Topic Prefix (e.g., 'teslamate')",
+              "car_ids": "Car IDs (comma-separated, e.g., '1' or '1,2,3')"
+            },
+            "data_description": {
+              "name": "Friendly name for this integration",
+              "mqtt_prefix": "The MQTT topic prefix used by TeslaMate (check TeslaMate MQTT_NAMESPACE env variable)",
+              "car_ids": "Comma-separated list of car IDs from TeslaMate (first car is usually ID 1)"
             }
           }
         },
         "error": {
-          "mqtt_not_loaded": "MQTT integration is not loaded. Please configure MQTT first.",
+          "mqtt_not_loaded": "MQTT integration is not loaded. Please configure MQTT first in Settings → Devices & Services → Add Integration → MQTT.",
           "cannot_connect": "Failed to connect to MQTT broker",
           "unknown": "Unexpected error occurred"
         },
