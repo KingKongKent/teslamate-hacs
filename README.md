@@ -38,7 +38,7 @@ A comprehensive Home Assistant Custom Component (HACS) integration for [TeslaMat
 2. Click on "Integrations"
 3. Click the three dots in the top right corner
 4. Select "Custom repositories"
-5. Add this repository URL: `https://github.com/your-username/teslamate-hacs`
+5. Add this repository URL: `https://github.com/KingKongKent/teslamate-hacs`
 6. Category: Integration
 7. Click "Add"
 8. Click "Install" on the TeslaMate integration
