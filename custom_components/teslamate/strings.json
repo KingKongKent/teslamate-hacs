@@ -1,41 +1,38 @@
 {
-  "translations": {
-    "en": {
-      "config": {
-        "step": {
-          "user": {
-            "title": "TeslaMate Configuration",
-            "description": "Configure your TeslaMate MQTT integration.\n\n{mqtt_status}\n{detected_config}\n\nThe integration will automatically detect your Tesla and sync data from TeslaMate.",
-            "data": {
-              "name": "Name",
-              "mqtt_prefix": "MQTT Topic Prefix (e.g., 'teslamate')",
-              "car_ids": "Car IDs (comma-separated, e.g., '1' or '1,2,3')"
-            },
-            "data_description": {
-              "name": "Friendly name for this integration",
-              "mqtt_prefix": "The MQTT topic prefix used by TeslaMate (check TeslaMate MQTT_NAMESPACE env variable)",
-              "car_ids": "Comma-separated list of car IDs from TeslaMate (first car is usually ID 1)"
-            }
-          }
+  "config": {
+    "step": {
+      "user": {
+        "title": "TeslaMate MQTT Configuration",
+        "description": "Configure connection to TeslaMate via MQTT.\n\n**Requirements:**\n• MQTT integration must be configured first\n• TeslaMate must be running and publishing to MQTT\n\n**Finding Your Settings:**\n• MQTT prefix: Check TeslaMate's MQTT_NAMESPACE env variable (default: 'teslamate')\n• Car IDs: First car = 1, second car = 2, etc. Check TeslaMate web UI or MQTT topics\n\nFor detailed help, see documentation: MQTT_CONFIGURATION.md",
+        "data": {
+          "name": "Name",
+          "mqtt_prefix": "MQTT Topic Prefix",
+          "car_ids": "Car IDs (comma-separated)"
         },
-        "error": {
-          "mqtt_not_loaded": "MQTT integration is not loaded. Please configure MQTT first in Settings → Devices & Services → Add Integration → MQTT.",
-          "cannot_connect": "Failed to connect to MQTT broker",
-          "unknown": "Unexpected error occurred"
-        },
-        "abort": {
-          "already_configured": "This TeslaMate configuration is already set up"
+        "data_description": {
+          "name": "Friendly name for this integration (e.g., 'My Tesla')",
+          "mqtt_prefix": "MQTT prefix from TeslaMate (usually 'teslamate')",
+          "car_ids": "Your car IDs from TeslaMate (e.g., '1' or '1,2,3')"
         }
-      },
-      "options": {
-        "step": {
-          "init": {
-            "title": "TeslaMate Options",
-            "description": "Update your TeslaMate configuration",
-            "data": {
-              "mqtt_prefix": "MQTT Topic Prefix"
-            }
-          }
+      }
+    },
+    "error": {
+      "mqtt_not_loaded": "MQTT integration not found! Configure MQTT first: Settings → Devices & Services → Add Integration → MQTT",
+      "cannot_connect": "Failed to connect to MQTT broker. Check MQTT configuration.",
+      "invalid_car_ids": "Invalid car IDs format. Use comma-separated numbers (e.g., '1' or '1,2,3')",
+      "unknown": "Unexpected error occurred. Check Home Assistant logs."
+    },
+    "abort": {
+      "already_configured": "This TeslaMate configuration already exists."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "TeslaMate Options",
+        "description": "Update MQTT prefix if TeslaMate configuration changed.",
+        "data": {
+          "mqtt_prefix": "MQTT Topic Prefix"
         }
       }
     }
