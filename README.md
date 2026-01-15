@@ -75,9 +75,18 @@ Default car_id is usually `1`. If you have multiple cars, enter them as comma-se
 
 ### 1. Add Car Picture
 
-1. Add a picture of your Tesla to `config/www/tesla_car.png` in your Home Assistant directory
-   - You can find Tesla images online or use the official Tesla images
-   - Recommended size: 1920x1080 or similar 16:9 aspect ratio
+The integration includes an icon, but you'll want to add a photo of your specific Tesla for the dashboard.
+
+**Quick Steps:**
+1. Get a photo of your Tesla (or download from tesla.com)
+2. Save it to `config/www/tesla_images/my_tesla.jpg`
+3. Update the dashboard picture entity to use `/local/tesla_images/my_tesla.jpg`
+
+**Detailed instructions:** See [ADDING_CAR_IMAGE.md](ADDING_CAR_IMAGE.md) for:
+- How to get Tesla Model Y Performance official images
+- Image specifications and best practices
+- Multiple car setup
+- Troubleshooting
 
 ### 2. Import Dashboard
 
