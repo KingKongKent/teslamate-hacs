@@ -31,3 +31,8 @@ ENV/
 .mypy_cache/
 .coverage
 htmlcov/
+
+# Local scripts and personal files
+publish-to-github.ps1
+*.local.*
+*_local.*

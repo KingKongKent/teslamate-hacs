@@ -18,13 +18,11 @@ views:
       - type: vertical-stack
         cards:
           # Car Picture Card
-          - type: picture-entity
-            entity: device_tracker.tesla_3_location
+          # Using simple picture card - doesn't depend on entity existing
+          - type: picture
             image: /local/tesla_car.png
-            name: Black Magic
-            show_name: true
-            show_state: true
-            aspect_ratio: 16x9
+            tap_action:
+              action: none
             
           # Status Row
           - type: horizontal-stack
