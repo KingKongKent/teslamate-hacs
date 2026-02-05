@@ -193,8 +193,20 @@ This integration works with TeslaMate v1.27.0 and later.
 ## Support
 
 For issues, questions, or feature requests:
-- [GitHub Issues](https://github.com/your-username/teslamate-hacs/issues)
+- [GitHub Issues](https://github.com/KingKongKent/teslamate-hacs/issues)
 - [Home Assistant Community](https://community.home-assistant.io/)
+
+### Sponsor This Project
+
+If you find this integration useful, consider supporting its development:
+
+[![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue.svg)](https://www.paypal.com/paypalme/KingKongKent)
+
+### Sponsor This Project
+
+If you find this integration useful, consider supporting its development:
+
+[![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue.svg)](https://www.paypal.com/paypalme/KingKongKent)
 
 ## Credits
 
